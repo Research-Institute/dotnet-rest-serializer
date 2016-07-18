@@ -32,10 +32,6 @@ namespace dotnet_rest_serializer_example
       services.AddMvc(options =>
       {
         options.OutputFormatters.Insert(0, new RootNameOutputFormatter());
-      }).AddJsonOptions(opts =>
-      {
-        // Force Camel Case to JSON
-        opts.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
       });
     }
 

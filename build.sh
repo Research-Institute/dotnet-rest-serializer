@@ -23,4 +23,4 @@ mono ./dotnet-rest-serializer-test/bin/Release/net451/*/dotnet-test-xunit.exe ./
 revision=${TRAVIS_JOB_ID:=1}  
 revision=$(printf "%04d" $revision) 
 
-dotnet pack ./src/emr-api -c Release -o ./artifacts --version-suffix=alpha-$revision  
+dotnet pack ./dotnet-rest-serializer -c Release -o ./artifacts --version-suffix=alpha-$revision  

@@ -1,0 +1,8 @@
+*.suo
+*.user
+project.lock.json
+src/emr-api/bin
+test/emr-api-tests/bin
+obj
+.vs
+.vs/restore.dg

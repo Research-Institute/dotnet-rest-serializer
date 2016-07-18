@@ -5,6 +5,7 @@ using Humanizer;
 using System.Reflection;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
+using System.Linq;
 
 namespace dotnet_rest_serializer
 {
@@ -24,8 +25,33 @@ namespace dotnet_rest_serializer
 
       return SerializeJson(responseObject);
     }
+
+    public static object DeserializeFromRoot(string entityJson, Assembly assembly)
+    {
+      var objectDictionary = JsonConvert.DeserializeObject<Dictionary<string, object>>(entityJson);
+
+      var typeName = objectDictionary.Keys.First();
+
+      var entity = JsonConvert.SerializeObject(objectDictionary[typeName]);
+
+      typeName = typeName.Titleize().Replace(" ", "");
+      var singularTypeName = typeName.Singularize();
+
+      var entityType = assembly.GetTypes().Single(t => t.Name == singularTypeName);
+
+      if (singularTypeName == typeName)
+      {
+        return JsonConvert.DeserializeObject(entity, entityType);
+      }
+      else
+      {
+        var listType = typeof(List<>).MakeGenericType(entityType);
+        return JsonConvert.DeserializeObject(entity, listType);
+      }
+      
+    }
     
-    public static string SerializeJson(this object value)
+    public static string SerializeJson(object value)
     {
       var settings = new JsonSerializerSettings
       {
@@ -35,5 +61,6 @@ namespace dotnet_rest_serializer
 
       return JsonConvert.SerializeObject(value, settings);
     }
+    
   }
 }

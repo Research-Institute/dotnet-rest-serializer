@@ -18,7 +18,7 @@ dotnet restore
 # Instead, run directly with mono for the full .net version 
 dotnet build ./dotnet-rest-serializer-test -c Release -f net451
 
-mono ./dotnet-rest-serializer-test/bin/Release/net451/*/dotnet-test-xunit.exe ./dotnet-rest-serializer/dotnet-rest-serializer-test/bin/Release/net451/*/dotnet-rest-serializer-test.dll
+mono ./dotnet-rest-serializer-test/bin/Release/net451/*/dotnet-test-xunit.exe ./dotnet-rest-serializer-test/bin/Release/net451/*/dotnet-rest-serializer-test.dll
 
 revision=${TRAVIS_JOB_ID:=1}  
 revision=$(printf "%04d" $revision) 

@@ -1,13 +1,10 @@
-﻿using System.Buffers;
+﻿using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using dotnet_rest_serializer;
-using Microsoft.AspNetCore.Mvc.Formatters;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 
 namespace dotnet_rest_serializer_example
 {
@@ -32,6 +29,7 @@ namespace dotnet_rest_serializer_example
       services.AddMvc(options =>
       {
         options.OutputFormatters.Insert(0, new RootNameOutputFormatter());
+        options.InputFormatters.Insert(0, new RootNameInputFormatter(Assembly.GetEntryAssembly()));
       });
     }
 

@@ -7,6 +7,12 @@ namespace dotnet_rest_serializer
 {
   public class RootNameOutputFormatter : IOutputFormatter
   {
+    private readonly OutputPayloadFormatOptions _outputPayloadFormatOptions = new OutputPayloadFormatOptions();
+
+    public RootNameOutputFormatter(Action<OutputPayloadFormatOptions> options)
+    {
+      options.Invoke(_outputPayloadFormatOptions);
+    }
     public bool CanWriteResult(OutputFormatterCanWriteContext context)
     {
       if (context == null)
@@ -26,7 +32,7 @@ namespace dotnet_rest_serializer
 
       using (var writer = context.WriterFactory(response.Body, Encoding.UTF8))
       {
-        var responseJson = SerializationService.SerializeWithRoot(context.Object);
+        var responseJson = SerializationService.SerializeWithRoot(context.Object, _outputPayloadFormatOptions);
 
         await writer.WriteAsync(responseJson);
 

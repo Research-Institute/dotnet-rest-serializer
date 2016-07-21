@@ -1,10 +1,13 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using dotnet_rest_serializer;
+using dotnet_rest_serializer_example.Models;
 
 namespace dotnet_rest_serializer_example
 {
@@ -26,10 +29,22 @@ namespace dotnet_rest_serializer_example
     public void ConfigureServices(IServiceCollection services)
     {
       // Add framework services.
+      var serializationDefinitions = new Dictionary<Type, string>
+          {
+            { typeof(TestClass), "testClass" },
+            { typeof(List<TestClass>), "testClasses" }
+          };
       services.AddMvc(options =>
       {
-        options.OutputFormatters.Insert(0, new RootNameOutputFormatter());
-        options.InputFormatters.Insert(0, new RootNameInputFormatter(Assembly.GetEntryAssembly()));
+        options.InputFormatters.Insert(0, new RootNameInputFormatter(o =>
+        {
+          o.UseExplicitDefinition(serializationDefinitions);
+        }));
+        options.OutputFormatters.Insert(0, new RootNameOutputFormatter(o =>
+        {
+          o.UseExplicitDefinition(serializationDefinitions);
+        }));
+        
       });
     }
 

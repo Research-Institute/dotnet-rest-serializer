@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using dotnet_rest_serializer_example.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace dotnet_rest_serializer_example.Controllers
@@ -18,6 +19,12 @@ namespace dotnet_rest_serializer_example.Controllers
     public IActionResult Get(int id)
     {
       return Ok(new TestClass());
+    }
+
+    [HttpPost]
+    public IActionResult Post([FromBody] TestClass testClass)
+    {
+      return Ok(testClass);
     }
   }
 }

@@ -1,7 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Formatters;
 
@@ -9,38 +7,11 @@ namespace dotnet_rest_serializer
 {
   public class RootNameInputFormatter : IInputFormatter
   {
-    private Assembly _assembly;
+    private readonly InputPayloadFormatOptions _inputFormatterOptions = new InputPayloadFormatOptions();
 
-    public RootNameInputFormatter(Assembly assembly)
+    public RootNameInputFormatter(Action<InputPayloadFormatOptions> options)
     {
-      _assembly = assembly;
-    }
-
-    public bool CanWriteResult(OutputFormatterCanWriteContext context)
-    {
-      if (context == null)
-        throw new ArgumentNullException(nameof(context));
-
-      var contentTypeString = context.ContentType.ToString();
-
-      return string.IsNullOrEmpty(contentTypeString) || contentTypeString == "application/json";
-    }
-
-    public async Task WriteAsync(OutputFormatterWriteContext context)
-    {
-      if (context == null)
-        throw new ArgumentNullException(nameof(context));
-
-      var response = context.HttpContext.Response;
-
-      using (var writer = context.WriterFactory(response.Body, Encoding.UTF8))
-      {
-        var responseJson = SerializationService.SerializeWithRoot(context.Object);
-
-        await writer.WriteAsync(responseJson);
-
-        await writer.FlushAsync();
-      }
+      options.Invoke(_inputFormatterOptions);
     }
 
     public bool CanRead(InputFormatterContext context)
@@ -57,17 +28,24 @@ namespace dotnet_rest_serializer
     {
       if (context == null)
         throw new ArgumentNullException(nameof(context));
+
       var request = context.HttpContext.Request;
 
       if (request.ContentLength == 0)
       {
         return InputFormatterResult.SuccessAsync(null);
       }
-      
-      using (var reader = new StreamReader(context.HttpContext.Request.Body))
+
+      var model = DeSerializationService.DeserializeFromRoot(GetRequestBody(context.HttpContext.Request.Body), _inputFormatterOptions);
+
+      return InputFormatterResult.SuccessAsync(model);
+    }
+
+    private string GetRequestBody(Stream body)
+    {
+      using (var reader = new StreamReader(body))
       {
-        var model = SerializationService.DeserializeFromRoot(reader.ReadToEnd(), _assembly);
-        return InputFormatterResult.SuccessAsync(model);
+        return reader.ReadToEnd();
       }
     }
   }

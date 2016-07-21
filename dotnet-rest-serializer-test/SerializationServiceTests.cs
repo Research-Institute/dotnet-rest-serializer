@@ -21,8 +21,9 @@ namespace dotnet_rest_serializer_test
       // arrange
       var obj = new TestClass();
       var expected = SerializationService.SerializeJson(new {TestClass = obj});
+      
       // act
-      var result = SerializationService.SerializeWithRoot(obj);
+      var result = SerializationService.SerializeWithRoot(obj, new OutputPayloadFormatter());
 
       // assert
       Assert.Equal(expected, result);

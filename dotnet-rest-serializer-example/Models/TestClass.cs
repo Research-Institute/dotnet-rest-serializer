@@ -1,5 +1,5 @@
 ﻿
-namespace dotnet_rest_serializer_example
+namespace dotnet_rest_serializer_example.Models
 {
     public class TestClass
     {

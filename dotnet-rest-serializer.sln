@@ -9,6 +9,11 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "dotnet-rest-serializer-test
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "dotnet-rest-serializer-example", "dotnet-rest-serializer-example\dotnet-rest-serializer-example.xproj", "{87437930-3D1B-4E16-81ED-2EC749657E2E}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{52ADAD96-A0B7-4213-A483-B5E0DD6113E1}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

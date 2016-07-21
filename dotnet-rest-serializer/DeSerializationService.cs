@@ -60,7 +60,7 @@ namespace dotnet_rest_serializer
       // get the singular form of the entityName
       var singularTypeName = typeName.Singularize();
       // get the entity type from the assembly
-      var entityType = inputFormatterOptions.Assembly.GetTypes().Single(t => t.Name == typeName);
+      var entityType = inputFormatterOptions.Assembly.GetTypes().Single(t => t.Name == singularTypeName);
       // if the specified type name is singular, return the singular type, else return List<T>
       return singularTypeName == typeName ? entityType : typeof(List<>).MakeGenericType(entityType);
     }

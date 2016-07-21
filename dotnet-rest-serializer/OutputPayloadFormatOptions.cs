@@ -1,6 +1,4 @@
-﻿using System.Reflection;
-
-namespace dotnet_rest_serializer
+﻿namespace dotnet_rest_serializer
 {
   public class OutputPayloadFormatOptions : PayloadFormatOptions
   {

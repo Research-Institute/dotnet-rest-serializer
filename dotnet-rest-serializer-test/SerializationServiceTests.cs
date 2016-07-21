@@ -21,9 +21,11 @@ namespace dotnet_rest_serializer_test
       // arrange
       var obj = new TestClass();
       var expected = SerializationService.SerializeJson(new {TestClass = obj});
-      
+      var options = new OutputPayloadFormatOptions();
+      options.UseClassNames();
+
       // act
-      var result = SerializationService.SerializeWithRoot(obj, new OutputPayloadFormatter());
+      var result = SerializationService.SerializeWithRoot(obj, options);
 
       // assert
       Assert.Equal(expected, result);
@@ -34,10 +36,12 @@ namespace dotnet_rest_serializer_test
     {
       // arrange
       var obj = new List<TestClass>();
+      var options = new OutputPayloadFormatOptions();
+      options.UseClassNames();
 
       var expected = SerializationService.SerializeJson(new { TestClasses = obj });
       // act
-      var result = SerializationService.SerializeWithRoot(obj);
+      var result = SerializationService.SerializeWithRoot(obj, options);
 
       // assert
       Assert.Equal(expected, result);
@@ -48,11 +52,12 @@ namespace dotnet_rest_serializer_test
     {
       // arrange
       var obj = new TestClass();
-
+      var options = new InputPayloadFormatOptions();
+      options.UseClassNames(Assembly.Load(new AssemblyName("dotnet-rest-serializer-test")));
       var json = SerializationService.SerializeJson(new { TestClass = obj });
 
       // act
-      var result = SerializationService.DeserializeFromRoot(json, Assembly.Load(new AssemblyName("dotnet-rest-serializer-test")));
+      var result = DeSerializationService.DeserializeFromRoot(json, options);
       var typeResult = result as TestClass;
 
       // assert
@@ -64,11 +69,13 @@ namespace dotnet_rest_serializer_test
     {
       // arrange
       var obj = new TestClass();
+      var options = new InputPayloadFormatOptions();
+      options.UseClassNames(Assembly.Load(new AssemblyName("dotnet-rest-serializer-test")));
 
       var json = SerializationService.SerializeJson(new { TestClasses = new List<TestClass>() { obj } });
 
       // act
-      var result = SerializationService.DeserializeFromRoot(json, Assembly.Load(new AssemblyName("dotnet-rest-serializer-test")));
+      var result = DeSerializationService.DeserializeFromRoot(json, options);
       var typeResult = result as List<TestClass>;
 
       // assert

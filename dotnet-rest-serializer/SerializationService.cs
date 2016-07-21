@@ -12,13 +12,18 @@ namespace dotnet_rest_serializer
 {
   public static class SerializationService
   {
+    /// <summary>
+    /// Serialize the object with the root. If no valid root can be determined, the object will be serialized as is.
+    /// </summary>
+    /// <param name="entity">The object to serialize</param>
+    /// <param name="outputPayloadFormatOptions">Options for serialization</param>
+    /// <returns>The entity as a serialized JSON string</returns>
     public static string SerializeWithRoot(object entity, OutputPayloadFormatOptions outputPayloadFormatOptions)
     {
       // get the type name
       var typeName = GetTypeNameForSerialization(entity, outputPayloadFormatOptions);
-
-      // create the response object
-      var responseObject = new Dictionary<string, object> { [typeName] = entity };
+      
+      var responseObject = string.IsNullOrEmpty(typeName) ? entity : new Dictionary<string, object> { [typeName] = entity };
 
       return SerializeJson(responseObject);
     }
@@ -32,7 +37,7 @@ namespace dotnet_rest_serializer
           return FormatTypeNameForDeserialization(entity);
         case PayloadFormatOptions.FormatterStrategies.ExplicitDefinition:
           // get the typeName from the SerializationDefinitions
-          return outputPayloadFormatOptions.SerializationDefinitions.First(x => x.Key == entity.GetType()).Value;
+          return outputPayloadFormatOptions.SerializationDefinitions.FirstOrDefault(x => x.Key == entity.GetType()).Value;
         default:
           throw new ArgumentOutOfRangeException();
       }

@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
 using Xunit;
-using dotnet_rest_serializer;
+using dotnet_rest_serializer.Services;
+using dotnet_rest_serializer.Formatters;
 using Humanizer.Inflections;
 
 namespace dotnet_rest_serializer_test

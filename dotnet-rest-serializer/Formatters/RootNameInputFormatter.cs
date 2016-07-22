@@ -1,9 +1,11 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
+using dotnet_rest_serializer.Services;
 using Microsoft.AspNetCore.Mvc.Formatters;
+using Newtonsoft.Json;
 
-namespace dotnet_rest_serializer
+namespace dotnet_rest_serializer.Formatters
 {
   public class RootNameInputFormatter : IInputFormatter
   {
@@ -36,9 +38,18 @@ namespace dotnet_rest_serializer
         return InputFormatterResult.SuccessAsync(null);
       }
 
-      var model = DeSerializationService.DeserializeFromRoot(GetRequestBody(context.HttpContext.Request.Body), _inputFormatterOptions);
-
-      return InputFormatterResult.SuccessAsync(model);
+      try
+      {
+        var model = DeSerializationService.DeserializeFromRoot(GetRequestBody(context.HttpContext.Request.Body),
+          _inputFormatterOptions);
+        
+        return InputFormatterResult.SuccessAsync(model);
+      }
+      catch (JsonSerializationException)
+      {
+        context.HttpContext.Response.StatusCode = 422;
+        return InputFormatterResult.FailureAsync();
+      }
     }
 
     private string GetRequestBody(Stream body)

@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace dotnet_rest_serializer
+namespace dotnet_rest_serializer.Formatters
 {
   public class InputPayloadFormatOptions : PayloadFormatOptions
   {

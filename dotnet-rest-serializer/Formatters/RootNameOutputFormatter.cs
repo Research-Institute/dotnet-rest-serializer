@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Text;
 using System.Threading.Tasks;
+using dotnet_rest_serializer.Services;
 using Microsoft.AspNetCore.Mvc.Formatters;
 
-namespace dotnet_rest_serializer
+namespace dotnet_rest_serializer.Formatters
 {
   public class RootNameOutputFormatter : IOutputFormatter
   {

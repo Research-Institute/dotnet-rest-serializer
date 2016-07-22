@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using Newtonsoft.Json;
-using Humanizer;
+using System.ComponentModel;
+using System.Linq;
 using System.Reflection;
+using dotnet_rest_serializer.Formatters;
+using Humanizer;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
-using System.Linq;
 
-namespace dotnet_rest_serializer
+namespace dotnet_rest_serializer.Services
 {
   public static class SerializationService
   {
@@ -21,6 +23,8 @@ namespace dotnet_rest_serializer
     public static string SerializeWithRoot(object entity, OutputPayloadFormatOptions outputPayloadFormatOptions)
     {
       // get the type name
+      if (entity == null) return string.Empty;
+  
       var typeName = GetTypeNameForSerialization(entity, outputPayloadFormatOptions);
       
       var responseObject = string.IsNullOrEmpty(typeName) ? entity : new Dictionary<string, object> { [typeName] = entity };
@@ -34,10 +38,13 @@ namespace dotnet_rest_serializer
       {
         case PayloadFormatOptions.FormatterStrategies.ClassName:
           // get the typeName from the class name
-          return FormatTypeNameForDeserialization(entity);
-        case PayloadFormatOptions.FormatterStrategies.ExplicitDefinition:
+          return FormatTypeNameForDirectDeserialization(entity);
+        case PayloadFormatOptions.FormatterStrategies.Dictionary:
           // get the typeName from the SerializationDefinitions
           return outputPayloadFormatOptions.SerializationDefinitions.FirstOrDefault(x => x.Key == entity.GetType()).Value;
+        case PayloadFormatOptions.FormatterStrategies.Attribute:
+          // get the typeName from the attributes on the class
+          return FormatTypeNameForAttributeDeserialization(entity);
         default:
           throw new ArgumentOutOfRangeException();
       }
@@ -48,7 +55,7 @@ namespace dotnet_rest_serializer
     /// </summary>
     /// <param name="entity">The entity to serialize</param>
     /// <returns>The formatted name</returns>
-    private static string FormatTypeNameForDeserialization(object entity)
+    private static string FormatTypeNameForDirectDeserialization(object entity)
     {
       var type = entity.GetType();
 
@@ -62,6 +69,34 @@ namespace dotnet_rest_serializer
       return typeName;
     }
 
+    /// <summary>
+    /// Formats a type name (singular or plural), used in the FormatterStrategies.ClassName
+    /// </summary>
+    /// <param name="entity">The entity to serialize</param>
+    /// <returns>The formatted name</returns>
+    private static string FormatTypeNameForAttributeDeserialization(object entity)
+    {
+      var type = entity.GetType();
+      if (entity is IEnumerable)
+      {
+        type = type.GetGenericArguments()[0];
+        var attributes = TypeDescriptor.GetAttributes(type);
+        return GetPluralNameFromAttributes(attributes);
+      }
+      else
+      {
+        var attributes = TypeDescriptor.GetAttributes(type);
+        return GetSingularNameFromAttributes(attributes);
+      }
+    }
+    private static string GetPluralNameFromAttributes(AttributeCollection attributes)
+    {
+      return ((SerializationFormat) attributes[typeof(SerializationFormat)])?.PluralName;
+    }
+    private static string GetSingularNameFromAttributes(AttributeCollection attributes)
+    {
+      return ((SerializationFormat) attributes[typeof(SerializationFormat)])?.SingluarName;
+    }
     public static string SerializeJson(object value)
     {
       var settings = new JsonSerializerSettings

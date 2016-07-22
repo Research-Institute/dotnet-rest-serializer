@@ -24,6 +24,8 @@ namespace dotnet_rest_serializer_example.Controllers
     [HttpPost]
     public IActionResult Post([FromBody] TestClass testClass)
     {
+      if(testClass == null) return BadRequest();
+
       return Ok(testClass);
     }
   }

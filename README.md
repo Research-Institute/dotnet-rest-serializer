@@ -1,7 +1,7 @@
 # dotnet-rest-serializer
 A serializer to make dotnet work with Ember RESTAdapater
 
-[![Build Status](https://travis-ci.org/Research-Institute/dotnet-rest-serializer.svg?branch=master)](https://travis-ci.org/Research-Institute/dotnet-rest-serializer)
+[![Build status](https://ci.appveyor.com/api/projects/status/v3aq62npp6dgs6y0?svg=true)](https://ci.appveyor.com/project/jaredcnance/dotnet-rest-serializer)
 
 ## About
 For more information including usage, see the [blog post](http://nance.io/dotnet/ember/2016/07/18/ember-dotnet-core.html)

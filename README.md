@@ -25,7 +25,33 @@ services.AddMvc(options =>
 });
 ```
 
-## Explicit Definitions
+## Attribute Definitions
+
+Class definition MUST be in the same assembly as the web project.
+
+```
+// Startup.cs
+services.AddMvc(options =>
+{
+    options.InputFormatters.Insert(0, new RootNameInputFormatter(o =>
+    {
+        o.UseAttributeDefinition();
+    }));
+    options.OutputFormatters.Insert(0, new RootNameOutputFormatter(o =>
+    {
+        o.UseAttributeDefinition();
+    }));
+});
+
+// TestClass.cs
+[SerializationFormat("testClass", "testClasses")]
+public class TestClassPresenter
+{
+    public string Name { get; set; }
+}
+```
+
+## Dictionary Definitions
 
 ```
 var serializationDefinitions = new Dictionary<Type, string> 

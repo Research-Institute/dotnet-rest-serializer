@@ -39,7 +39,6 @@ namespace dotnet_rest_serializer_example
         {
           o.UseAttributeDefinition();
         }));
-        
       });
     }
 

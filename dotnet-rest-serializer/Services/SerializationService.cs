@@ -77,8 +77,12 @@ namespace dotnet_rest_serializer.Services
     private static string FormatTypeNameForAttributeDeserialization(object entity)
     {
       var type = entity.GetType();
+      if (GetListOfPrimitiveLikeTypes().Contains(type))
+        return string.Empty;
+
       if (entity is IEnumerable)
       {
+        // gets the generic argument type such as List<T>
         type = type.GetGenericArguments()[0];
         var attributes = TypeDescriptor.GetAttributes(type);
         return GetPluralNameFromAttributes(attributes);
@@ -106,6 +110,29 @@ namespace dotnet_rest_serializer.Services
       };
 
       return JsonConvert.SerializeObject(value, settings);
+    }
+
+    private static List<Type> GetListOfPrimitiveLikeTypes()
+    {
+      return new List<Type>
+      {
+        typeof(decimal),
+        typeof(string),
+        typeof(bool),
+        typeof(byte),
+        typeof(sbyte),
+        typeof(int),
+        typeof(uint),
+        typeof(char),
+        typeof(double),
+        typeof(float),
+        typeof(long),
+        typeof(DateTime),
+        typeof(TimeSpan),
+        typeof(DateTimeOffset),
+        typeof(Guid),
+        typeof(Enum)
+      };
     }
   }
 }

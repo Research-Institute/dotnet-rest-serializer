@@ -49,6 +49,23 @@ namespace dotnet_rest_serializer_test
     }
 
     [Fact]
+    public void SerializeWithRoot_ReturnsSerializedObjectAsIsIfNoValidTypeNameCanBeFound()
+    {
+      // arrange
+      const string content = "this is a string";
+      var expected = SerializationService.SerializeJson(content);
+      var obj = new TestClass();
+      var options = new OutputPayloadFormatOptions();
+      options.UseAttributeDefinition();
+
+      // act
+      var result = SerializationService.SerializeWithRoot(content, options);
+
+      // assert
+      Assert.Equal(expected, result);
+    }
+
+    [Fact]
     public void DeserializeFromRoot_DeSerializesSingularObjects()
     {
       // arrange
@@ -82,5 +99,6 @@ namespace dotnet_rest_serializer_test
       // assert
       Assert.NotNull(typeResult);
     }
+    
   }
 }

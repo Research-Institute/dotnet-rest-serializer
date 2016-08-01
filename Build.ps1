@@ -62,4 +62,4 @@ $revision = "{0:D4}" -f [convert]::ToInt32($revision, 10)
 
 exec { & dotnet test .\dotnet-rest-serializer-test -c Release }
 
-exec { & dotnet pack .\dotnet-rest-serializer -c Release -o .\artifacts --version-suffix=$revision }  
+exec { & dotnet pack .\dotnet-rest-serializer -c Release -o .\artifacts --version-suffix=1$revision }  

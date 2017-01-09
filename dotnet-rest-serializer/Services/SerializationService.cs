@@ -82,8 +82,14 @@ namespace dotnet_rest_serializer.Services
 
       if (entity is IEnumerable)
       {
-        // gets the generic argument type such as List<T>
-        type = type.GetGenericArguments()[0];
+		// gets the generic argument type such as List<T>
+		var genericArguments = type.GetGenericArguments();
+
+		if (genericArguments.Length == 0)
+			return string.Empty;
+		
+		type = genericArguments[0];
+
         var attributes = TypeDescriptor.GetAttributes(type);
         return GetPluralNameFromAttributes(attributes);
       }
@@ -93,14 +99,17 @@ namespace dotnet_rest_serializer.Services
         return GetSingularNameFromAttributes(attributes);
       }
     }
+
     private static string GetPluralNameFromAttributes(AttributeCollection attributes)
     {
       return ((SerializationFormat) attributes[typeof(SerializationFormat)])?.PluralName;
     }
+
     private static string GetSingularNameFromAttributes(AttributeCollection attributes)
     {
       return ((SerializationFormat) attributes[typeof(SerializationFormat)])?.SingluarName;
     }
+
     public static string SerializeJson(object value)
     {
       var settings = new JsonSerializerSettings
